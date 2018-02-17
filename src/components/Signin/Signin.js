@@ -17,13 +17,12 @@ class Signin extends Component {
     }
     handleSubmit = () =>{
         console.log(this.state)
-        // event.preventDefault();
-
         axios.post('https://talent-dashboard-app.herokuapp.com/login', this.state).then((response) => {
             if(response.status == 200){
                 var response = response.data
                 if(response['status']){
                     localStorage.setItem('user', response['data']['employee']);
+                    localStorage.setItem('token', response['data']['token'])
                     this.props.history.push('/')
                 }
                 else{
