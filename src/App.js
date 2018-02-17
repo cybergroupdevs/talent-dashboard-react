@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, withRouter} from 'react-router-dom';
 import Layout from './hoc/Layout/Layout';
 import Header from '../src/components/Header/Header';
 import EmployeeForm from '../src/components/Form/Form';
@@ -10,11 +10,19 @@ import Signup from './components/Signup/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
 import Aux from './hoc/Aux/Aux'
 class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+  logout = () =>{
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+    this.props.history.push('/login')
+  }
   render() {
     return (
       <div className="App">
         <Layout>
-          <Header/>
+          <Header currentUser={localStorage.getItem('user')} clickOnLogout={this.logout}/>
           <Switch>
             <Route path="/login" component={Signin} />
             <Route path="/register" component={Signup} />
@@ -28,4 +36,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

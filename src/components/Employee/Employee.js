@@ -16,13 +16,16 @@ class Employee extends Component {
         }
     }
     componentDidMount () {
-        axios.get('https://talent-dashboard-app.herokuapp.com/employeelist', {
-            responseType: 'json'
-        }).then(response => {
-            this.setState({ employeeList: response.data });
-        }).catch((error) => {
-            console.log(error)
-        })
+        if(localStorage.getItem('user')){
+            axios.get('https://talent-dashboard-app.herokuapp.com/employeeList', {token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbEFkZHJlc3MiOiJ2aWpheS5tYXNpd2FsQGN5Z3JwLmNvbSIsInVzZXJUeXBlIjoiVVNFUiIsInVzZXJJZCI6IjVhODY3MGJlOWM5MGYyM2RkODc1N2I0ZSIsImlhdCI6MTUxODc4NjY3MCwiZXhwIjoxNTE4NzkyNjcwfQ.unCVRxzSZ5eNB_yob_t2FqgJxMxhkc3LL1_H5v2PQ1o"}).then(response => {
+                this.setState({ employeeList: response.data });
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        else{
+            this.props.history.push('/login')
+        }
     }
     afterSearch(searchText, result) {
         console.log('Your search text is ' + searchText);
@@ -63,7 +66,7 @@ class Employee extends Component {
             <div>
                 <BootstrapTable data={ employeeList } search={ true } options={ options } pagination striped hover condensed>
                     <TableHeaderColumn dataField='employeeCode' isKey searchable={ false }>Product ID</TableHeaderColumn>
-                    <TableHeaderColumn dataField='employeeName'>Fruit Name</TableHeaderColumn>
+                    <TableHeaderColumn dataField='employeeName'>Employee Name</TableHeaderColumn>
                     <TableHeaderColumn dataField='emailAddress'>Product Price</TableHeaderColumn>
                     <TableHeaderColumn dataField='showUrl'>Product Price</TableHeaderColumn>
                 </BootstrapTable>

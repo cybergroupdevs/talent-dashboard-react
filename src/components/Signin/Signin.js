@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Spinner from '../Spinner/Spinner';
 class Signin extends Component {
     constructor(props) {
         super(props);
@@ -18,26 +19,28 @@ class Signin extends Component {
         console.log(this.state)
         // event.preventDefault();
 
-        axios.post('https://talent-dashboard-app.herokuapp.com/register',{responseType: 'json'}, this.state).then((response) => {
-            if(response.data.code == 200){
-
+        axios.post('https://talent-dashboard-app.herokuapp.com/login', this.state).then((response) => {
+            if(response.status == 200){
+                var response = response.data
+                if(response['status']){
+                    localStorage.setItem('user', response['data']['employee']);
+                    this.props.history.push('/')
+                }
+                else{
+                    alert(response['mesage'])
+                }
             }
             else{
-
+                alert(response.statusText)
             }
-            console.log(response)
-            this.props.history.push('/login')
-            // if(response)
-            // <Redirect to="/login"/> // Here, nothings happens
         }).catch((error) => {
             console.log(error)
-            // const errors = error.response.data.errors ? error.response.data.errors : {};
-            // errors.summary = error.response.data.message;
-
-            // this.setState({
-            //     errors
-            // });
         });
+    }
+    componentDidMount () {
+        if(localStorage.getItem('user')){
+            this.props.history.push('/')
+        }
     }
     render() {
         return (

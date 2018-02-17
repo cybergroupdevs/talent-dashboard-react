@@ -11,7 +11,6 @@ class Signup extends Component {
             "employeeCode":"",
             "password":""
         };
-    
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
@@ -19,29 +18,29 @@ class Signup extends Component {
         this.setState({value: event.target.value});
     }
     handleSubmit = () =>{
-        console.log(this.state)
-        // event.preventDefault();
-
-        axios.post('https://talent-dashboard-app.herokuapp.com/register',{responseType: 'json'}, this.state).then((response) => {
-            if(response.data.code == 200){
-
+        axios.post('https://talent-dashboard-app.herokuapp.com/register', this.state).then((response) => {   
+            if(response.status == 200){
+                var response = response.data
+                if(response['status']){
+                    localStorage.setItem('user', response['data']['employee']);
+                    localStorage.setItem('token', response['data']['token'])
+                    this.props.history.push('/')
+                }
+                else{
+                    alert(response['mesage'])
+                }
             }
             else{
-
+                alert(response.statusText)
             }
-            console.log(response)
-            this.props.history.push('/login')
-            // if(response)
-            // <Redirect to="/login"/> // Here, nothings happens
         }).catch((error) => {
             console.log(error)
-            // const errors = error.response.data.errors ? error.response.data.errors : {};
-            // errors.summary = error.response.data.message;
-
-            // this.setState({
-            //     errors
-            // });
         });
+    }
+    componentDidMount () {
+        if(localStorage.getItem('user')){
+            this.props.history.push('/')
+        }
     }
     render() {
         return (

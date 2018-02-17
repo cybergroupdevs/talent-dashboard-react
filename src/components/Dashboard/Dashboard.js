@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 class EmployeeForm extends Component {
+    componentDidMount () {
+        if(!localStorage.getItem('user')){
+            this.props.history.push('/login')
+        }
+    }
     render() {
         return (
             <div id="page-wrapper">
