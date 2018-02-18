@@ -3,6 +3,8 @@ import classes from './Employee.css';
 import ReactTable from 'react-table';
 import axios from 'axios';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import  '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+// import  '../../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css';
 class Employee extends Component {
     constructor (){
         super();
@@ -34,52 +36,29 @@ class Employee extends Component {
     render() {
         const options = {}
         const employees = [];
-        this.state.employeeList.forEach((emp) =>{
-            employees.push({
-                "employeeCode": emp['employeeCode'],
-                "employeeName": emp['displayName'],
-                "emailAddress": emp['emailAddress'],
-                "gender": emp['gender'],
-                "skills": (emp['skills'] && emp['skills'].length>0)?emp['skills'].join(', '):"-",
-                "showUrl": <a href="https://talent-dashboard-app.herokuapp.com/userdetail?userId=1234&token=2dad">Url</a>
+        if(this.state.employeeList){
+            this.state.employeeList.forEach((emp) =>{
+                employees.push({
+                    "employeeCode": emp['employeeCode'],
+                    "employeeName": emp['displayName'],
+                    "emailAddress": emp['emailAddress'],
+                    "gender": emp['gender'],
+                    "skills": (emp['skills'] && emp['skills'].length>0)?emp['skills'].join(', '):"-",
+                    "showUrl": <a href="https://talent-dashboard-app.herokuapp.com/userdetail?userId=1234&token=2dad">Url</a>
 
+                })
             })
-        })
-        const columns = [{
-            Header: 'CGI Code',
-            headerClassName: 'my-favorites-column-header-group',
-            accessor: 'employeeCode' // String-based value accessors!
-          }, {
-            Header: 'Name',
-            headerClassName: 'my-favorites-column-header-group',
-            accessor: 'employeeName',
-          }, {
-            Header: 'Email Id',
-            headerClassName: 'my-favorites-column-header-group',
-            accessor: "emailAddress"
-          },{
-            Header: 'Gender',
-            headerClassName: 'my-favorites-column-header-group',
-            accessor: "gender"
-          },{
-            Header: 'Skills',
-            headerClassName: 'my-favorites-column-header-group',
-            accessor: "skills"
-          }, {
-            Header: "Action",
-            headerClassName: 'my-favorites-column-header-group',
-            accessor: "showUrl"
-          }]
-         
+        }
+        
         return (
-            <div>
-                <BootstrapTable data={ employees } search={ true } options={ options } pagination striped hover condensed>
-                    <TableHeaderColumn dataField='employeeCode' isKey>Employee Code</TableHeaderColumn>
-                    <TableHeaderColumn dataField='employeeName'>Employee Name</TableHeaderColumn>
-                    <TableHeaderColumn dataField='emailAddress'>Email Address</TableHeaderColumn>
-                    <TableHeaderColumn dataField='gender'>Gender</TableHeaderColumn>
-                    <TableHeaderColumn dataField='skills'>Skills</TableHeaderColumn>
-                    <TableHeaderColumn dataField='showUrl'>Url</TableHeaderColumn>
+            <div id="page-wrapper" className="bg-neutral-li">
+                <BootstrapTable data={ employees } search={ true } loading={ true } pagination striped={true} hover={true} condensed={true} exportCSV>
+                    <TableHeaderColumn dataField='employeeCode' isKey dataSort dataAlign='center' headerAlign='center'>Emp Code</TableHeaderColumn>
+                    <TableHeaderColumn dataField='employeeName' dataSort dataAlign='center' headerAlign='center'>Name</TableHeaderColumn>
+                    <TableHeaderColumn dataField='emailAddress' dataSort dataAlign='center' headerAlign='center' width="25%">Email Address</TableHeaderColumn>
+                    <TableHeaderColumn dataField='gender' dataSort dataAlign='center' headerAlign='center'>Gender</TableHeaderColumn>
+                    <TableHeaderColumn dataField='skills' dataAlign='center' headerAlign='center' tdStyle={ { whiteSpace: 'normal' } }>Skills</TableHeaderColumn>
+                    <TableHeaderColumn dataField='showUrl' dataAlign='center' headerAlign='center'>Url</TableHeaderColumn>
                 </BootstrapTable>
             </div>
         )

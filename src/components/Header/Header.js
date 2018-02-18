@@ -17,7 +17,7 @@ const header = (props) => {
                     <a className="navbar-brand" href="index.html">Cyber Group</a>
                 </div>
 
-                <div className="navbar-default sidebar pull-left" role="navigation">
+                <div className="navbar-default sidebar pull-left" role="navigation" style={{"min-height": 550}}>
                     <div className="sidebar-nav navbar-collapse collapse">
                         <ul className="nav in " id="side-menu">
                             <li className="sidebar-search">
