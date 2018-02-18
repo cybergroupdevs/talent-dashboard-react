@@ -11,6 +11,18 @@ class Employee extends Component {
         this.state = {
             employeeList:[]
         }
+        this.options = {
+            onPageChange: this.onPageChange.bind(this),
+            onSizePerPageList: this.sizePerPageListChange.bind(this)
+        };
+        
+    }
+    sizePerPageListChange(sizePerPage) {
+        alert(`sizePerPage: ${sizePerPage}`);
+    }
+    
+    onPageChange(page, sizePerPage) {
+        alert(`page: ${page}, sizePerPage: ${sizePerPage}`);
     }
     componentDidMount () {
         if(localStorage.getItem('user')){
@@ -52,7 +64,7 @@ class Employee extends Component {
         
         return (
             <div id="page-wrapper" className="bg-neutral-li">
-                <BootstrapTable data={ employees } search={ true } loading={ true } pagination striped={true} hover={true} condensed={true} exportCSV>
+                <BootstrapTable data={ employees } pagination options={ this.options } search={ true } loading={ true }  striped={true} hover={true} condensed={true} exportCSV>
                     <TableHeaderColumn dataField='employeeCode' isKey dataSort dataAlign='center' headerAlign='center'>Emp Code</TableHeaderColumn>
                     <TableHeaderColumn dataField='employeeName' dataSort dataAlign='center' headerAlign='center'>Name</TableHeaderColumn>
                     <TableHeaderColumn dataField='emailAddress' dataSort dataAlign='center' headerAlign='center' width="25%">Email Address</TableHeaderColumn>
