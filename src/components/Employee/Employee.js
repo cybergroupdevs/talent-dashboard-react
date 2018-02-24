@@ -2,27 +2,49 @@ import React, { Component } from 'react';
 import classes from './Employee.css';
 import ReactTable from 'react-table';
 import axios from 'axios';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import  '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import {Link} from 'react-router-dom'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import injectTapEventPlugin from "react-tap-event-plugin";
+import orderBy from "lodash/orderBy";
+import TextField from "material-ui/TextField";
+import {
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+  } from 'material-ui/Table';
 // import  '../../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css';
+const invertDirection = {
+    asc: "desc",
+    desc: "asc"
+  };
 class Employee extends Component {
-    constructor (){
-        super();
-        this.state = {
-            employeeList:[]
-        }
-        this.options = {
-            onPageChange: this.onPageChange.bind(this),
-            onSizePerPageList: this.sizePerPageListChange.bind(this)
-        };
-        
-    }
-    sizePerPageListChange(sizePerPage) {
-        alert(`sizePerPage: ${sizePerPage}`);
-    }
+    state = {
+        fixedHeader: true,
+        fixedFooter: true,
+        stripedRows: false,
+        showRowHover: false,
+        selectable: false,
+        multiSelectable: true,
+        enableSelectAll: false,
+        deselectOnClickaway: true,
+        showCheckboxes: true,
+        height: '300px',
+        employeeList: [],
+        editIdx: -1,
+        columnToSort: "",
+        sortDirection: "desc",
+        employeeList: []
+      };
     
-    onPageChange(page, sizePerPage) {
-        alert(`page: ${page}, sizePerPage: ${sizePerPage}`);
+    handleChange (event) {
+        axios.get('https://talent-dashboard-app.herokuapp.com/employeeList?pageNo=1&searchkey='+event.target.value,{ headers: { token: localStorage.getItem('token') } }).then(response => {
+            this.setState({ employeeList: response.data['data'] });
+        }).catch((error) => {
+            console.log(error)
+        })
     }
     componentDidMount () {
         if(localStorage.getItem('user')){
@@ -36,21 +58,42 @@ class Employee extends Component {
             this.props.history.push('/login')
         }
     }
-    // afterSearch(searchText, result) {
-    //     console.log('Your search text is ' + searchText);
-    //     console.log('Result is:');
-    //     for (let i = 0; i < result.length; i++) {
-    //         console.log('Fruit: ' + result[i].id + ', ' + result[i].name + ', ' + result[i].price);
-    //     }
-    // }
-      
-     
+    handleRemove = i => {
+        this.setState(state => ({
+          data: state.data.filter((row, j) => j !== i)
+        }));
+      };
+    
+      startEditing = i => {
+        this.setState({ editIdx: i });
+      };
+    
+      stopEditing = () => {
+        this.setState({ editIdx: -1 });
+      };
+    
+      handleSave = (i, x) => {
+        this.setState(state => ({
+          data: state.data.map((row, j) => (j === i ? x : row))
+        }));
+        this.stopEditing();
+      };
+    
+      handleSort = columnName => {
+        this.setState(state => ({
+          columnToSort: columnName,
+          sortDirection:
+            state.columnToSort === columnName
+              ? invertDirection[state.sortDirection]
+              : "asc"
+        }));
+      };
     render() {
-        const options = {}
         const employees = [];
-        if(this.state.employeeList){
+        if(this.state.employeeList && this.state.employeeList.length >0){
             this.state.employeeList.forEach((emp) =>{
                 employees.push({
+                    "img": "https://www.iconexperience.com/_img/g_collection_png/standard/256x256/businessman.png",
                     "employeeCode": emp['employeeCode'],
                     "employeeName": emp['displayName'],
                     "emailAddress": emp['emailAddress'],
@@ -63,18 +106,37 @@ class Employee extends Component {
         }
         
         return (
-            <div id="page-wrapper" className="bg-neutral-li">
-                <BootstrapTable data={ employees } pagination options={ this.options } search={ true } loading={ true }  striped={true} hover={true} condensed={true} exportCSV>
-                    <TableHeaderColumn dataField='employeeCode' isKey dataSort dataAlign='center' headerAlign='center'>Emp Code</TableHeaderColumn>
-                    <TableHeaderColumn dataField='employeeName' dataSort dataAlign='center' headerAlign='center'>Name</TableHeaderColumn>
-                    <TableHeaderColumn dataField='emailAddress' dataSort dataAlign='center' headerAlign='center' width="25%">Email Address</TableHeaderColumn>
-                    <TableHeaderColumn dataField='gender' dataSort dataAlign='center' headerAlign='center'>Gender</TableHeaderColumn>
-                    <TableHeaderColumn dataField='skills' dataAlign='center' headerAlign='center' tdStyle={ { whiteSpace: 'normal' } }>Skills</TableHeaderColumn>
-                    <TableHeaderColumn dataField='showUrl' dataAlign='center' headerAlign='center'>Url</TableHeaderColumn>
-                </BootstrapTable>
+            
+            <div style={{marginRight: "40px",marginLeft: "40px",paddingTop:"20px",paddingBottom:"50px"}}>
+                <div className="form-group">
+                    <input type="text" className="form-control" id="usr" onChange={this.handleChange}/>
+                </div>
+                <MuiThemeProvider>
+                    <Table multiSelectable={this.state.multiSelectable}>
+                        <TableHeader>
+                        <TableRow>
+                            <TableHeaderColumn>Employee Code</TableHeaderColumn>
+                            <TableHeaderColumn>Name</TableHeaderColumn>
+                            <TableHeaderColumn>Email Address</TableHeaderColumn>
+                            <TableHeaderColumn>Skills</TableHeaderColumn>
+                            <TableHeaderColumn>Action</TableHeaderColumn>
+                        </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                        {this.state.employeeList.map((emp) => (
+                            <TableRow>
+                                <TableRowColumn>{emp.employeeCode}</TableRowColumn>
+                                <TableRowColumn>{emp.displayName}</TableRowColumn>
+                                <TableRowColumn>{emp.emailAddress}</TableRowColumn>
+                                <TableRowColumn>{emp.skills}</TableRowColumn>
+                                <TableRowColumn><Link to="/userdetail">View Detail</Link></TableRowColumn>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
+                </MuiThemeProvider>
             </div>
         )
-        document.getElementById('basic')
     }
 }
 

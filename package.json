@@ -5,13 +5,22 @@
   "dependencies": {
     "axios": "^0.17.1",
     "bootstrap": "^4.0.0",
+    "chart.js": "^2.7.1",
+    "fusioncharts": "^3.12.2",
+    "lodash": "^4.17.5",
+    "material-ui": "^0.20.0",
+    "materialui-pagination": "0.0.6",
     "react": "^16.2.0",
+    "react-avatar": "^2.5.1",
     "react-bootstrap-table": "^4.3.1",
+    "react-chartjs-2": "^2.7.0",
     "react-dom": "^16.2.0",
+    "react-fusioncharts": "^1.0.4",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.0",
-    "react-table": "^6.7.6"
+    "react-table": "^6.7.6",
+    "react-tap-event-plugin": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

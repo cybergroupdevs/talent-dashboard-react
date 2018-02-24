@@ -22,7 +22,7 @@ class Signup extends Component {
             if(response.status == 200){
                 var response = response.data
                 if(response['status']){
-                    localStorage.setItem('user', response['data']['employee']);
+                    localStorage.setItem('user', JSON.stringify(response['data']['employee']));
                     localStorage.setItem('token', response['data']['token'])
                     this.props.history.push('/')
                 }
