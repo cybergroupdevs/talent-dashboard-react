@@ -63,10 +63,10 @@ class Dashboard extends Component {
                     employees['labels'].forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
                     employees['labels'] = this.uniq(employees['labels'])
                     employees['labels'] = employees['labels'].slice(0,6)
-                    employees['datasets'].push({"lable": "Data", data:[45,34,36,78,65,12]})
-                    // employees['labels'].forEach((lab) => {
-                    //     employees['datasets'][0]['data'].push({"lable": lab, data:counts[lab]})
-                    // })
+                    employees['datasets'].push({"lable": "Data", data:[]})
+                    employees['labels'].forEach((lab) => {
+                        employees['datasets'][0]['data'].push(counts[lab])
+                    })
                     this.setState({chartData: employees})
                 }
                 else{
