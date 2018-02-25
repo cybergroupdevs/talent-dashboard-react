@@ -13,15 +13,16 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Avatar from 'material-ui/Avatar';
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-  } from 'material-ui/Table';
-// import  '../../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import  '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+// import {
+//     Table,
+//     TableBody,
+//     TableHeader,
+//     TableHeaderColumn,
+//     TableRow,
+//     TableRowColumn,
+//   } from 'material-ui/Table';
 const invertDirection = {
     asc: "desc",
     desc: "asc"
@@ -44,13 +45,13 @@ class Employee extends Component {
         columnToSort: "",
         sortDirection: "desc",
         employeeList: [],
-        userdetail: [],
+        userdetail: {},
         open: false
       };
     handleOpen = (id,e) => {
         console.log(id);
-    this.setState({open: true});
-    if(localStorage.getItem('user')){
+        this.setState({open: true});
+        if(localStorage.getItem('user')){
             axios.get('https://talent-dashboard-app.herokuapp.com/userdetail?userId='+ id,{ headers: { token: localStorage.getItem('token') } }).then(response => {
                 this.setState({ userdetail: response.data['data'] });
             }).catch((error) => {
@@ -74,7 +75,7 @@ class Employee extends Component {
     }
     componentDidMount () {
         if(localStorage.getItem('user')){
-            axios.get('https://talent-dashboard-app.herokuapp.com/employeeList?pageNo=1',{ headers: { token: localStorage.getItem('token') } }).then(response => {
+            axios.get('https://talent-dashboard-app.herokuapp.com/employeeList?pageNo=1&limit=100',{ headers: { token: localStorage.getItem('token') } }).then(response => {
                 this.setState({ employeeList: response.data['data'] });
             }).catch((error) => {
                 console.log(error)
@@ -98,13 +99,19 @@ class Employee extends Component {
         this.setState({ editIdx: -1 });
       };
     
-      handleSave = (i, x) => {
+    handleSave = (i, x) => {
         this.setState(state => ({
           data: state.data.map((row, j) => (j === i ? x : row))
         }));
         this.stopEditing();
       };
-    
+    cellButton(cell, row, enumObject, rowIndex) {
+        return (
+            <MuiThemeProvider>
+            <RaisedButton className="raised_button" backgroundColor="#337ab7" className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
+            </MuiThemeProvider>
+        )
+     }
       handleSort = columnName => {
         this.setState(state => ({
           columnToSort: columnName,
@@ -144,21 +151,20 @@ const styles = {
     fontWeight: 400,
     height:100,
     width:100,
-    
-
-  },
+    },
 };
-        const employees = [];
-        const skills = [];
-        const style = {
-  margin: 12,
-};
+    const employees = [];
+    const skills = [];
+    const style = {
+        margin: 12,
+    };
 
         if(this.state.employeeList && this.state.employeeList.length >0){
             this.state.employeeList.forEach((emp) =>{
                 employees.push({
                     "img": "https://www.iconexperience.com/_img/g_collection_png/standard/256x256/businessman.png",
                     "employeeCode": emp['employeeCode'],
+                    "employeeId": emp['_id'],
                     "employeeName": emp['displayName'],
                     "emailAddress": emp['emailAddress'],
                     "gender": emp['gender'],
@@ -172,87 +178,66 @@ const styles = {
         return (
             
             <div style={{marginRight: "40px",marginLeft: "40px",paddingTop:"20px",paddingBottom:"50px"}}>
-                <div className="form-group">
-                    <input type="text" className="form-control" id="usr" onChange={this.handleChange}/>
-                </div>
+
+                <BootstrapTable data={employees} exportCSV pagination search={ true } trClassName='tr_table' tdClassName='td_table' tableHeaderClass='header_table' tableBodyClass='table_body'>
+                    <TableHeaderColumn dataField="employeeCode" isKey={true} dataAlign="center" dataSort={true}>Emp ID</TableHeaderColumn>
+                    <TableHeaderColumn dataField="employeeName" dataAlign="center" dataSort={true}>Name</TableHeaderColumn>
+                    <TableHeaderColumn dataField="emailAddress" dataAlign="center" dataSort={true} >Employee Address</TableHeaderColumn>
+                    <TableHeaderColumn dataField="skills" >Skills</TableHeaderColumn>
+                    <TableHeaderColumn dataField="employeeId" dataFormat={this.cellButton.bind(this)}>Button</TableHeaderColumn>
+                </BootstrapTable>
                 <MuiThemeProvider>
-                    <Table multiSelectable={this.state.multiSelectable}>
-                        <TableHeader>
-                        <TableRow>
-                            <TableHeaderColumn>Employee Code</TableHeaderColumn>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Email Address</TableHeaderColumn>
-                            <TableHeaderColumn>Skills</TableHeaderColumn>
-                            <TableHeaderColumn>Action</TableHeaderColumn>
-                        </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                        {this.state.employeeList.map((emp) => (
-                            <TableRow>
-                                <TableRowColumn>{emp.employeeCode}</TableRowColumn>
-                                <TableRowColumn>{emp.displayName}</TableRowColumn>
-                                <TableRowColumn>{emp.emailAddress}</TableRowColumn>
-                                <TableRowColumn>{emp.skills}</TableRowColumn>
-                                <TableRowColumn><RaisedButton onClick={this.handleOpen.bind(this,emp._id)} label="View Detail" secondary={true} style={style} /></TableRowColumn>
-                             <Dialog title="User Detail" actions={actions} modal={false} open={this.state.open} onRequestClose={this.handleClose} autoScrollBodyContent={true}
-        >
-        <center>
-         
-    <Avatar style={styles.employee} src="https://www.iconexperience.com/_img/g_collection_png/standard/256x256/businessman.png" />
-     </center>
-      <Tabs 
-        value={this.state.value}
-        onChange={this.handleChange}
-      >
-        <Tab label="Personal Details" value="a">
-          <div className="col-md-6">
-            <h6 style={styles.headline}>First Name</h6>
-             <TextField value={this.state.userdetail.firstName} />
-          </div>
-         
-           <div className="col-md-6">
-            <h6 style={styles.headline}>Middle Name</h6>
-             <TextField value={this.state.userdetail.middleName}/>
-          </div>
-          
-           <div className="col-md-6">
-            <h6 style={styles.headline}>Last Name</h6>
-             <TextField value={this.state.userdetail.lastName} />
-          </div>
-          <div className="col-md-6">
-            <h6 style={styles.headline}>Employee Code</h6>
-             <TextField value={this.state.userdetail.employeeCode} />
-          </div>
-          <div className="col-md-6">
-            <h6 style={styles.headline}>Email Address</h6>
-             <TextField value={this.state.userdetail.emailAddress} />
-          </div>
-          <div className="col-md-6">
-            <h6 style={styles.headline}>Gender</h6>
-             <TextField value={this.state.userdetail.gender} />
-          </div>
-          <div className="col-md-6">
-            <h6 style={styles.headline}>Mobile Number</h6>
-             <TextField value={this.state.userdetail.mobileNumber} />
-          </div>
-        </Tab>
-        <Tab label="Skills Details" value="b">
-          <div>
-          
-             
-                <h6 style={styles.headline}>{ this.state.userdetail.skills}</h6>
-            
-           
-            
-          </div>
-        </Tab>
-      </Tabs>
-        </Dialog>
-                                 
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
+                <Dialog title="Employee Detail" actions={actions} modal={false} open={this.state.open} onRequestClose={this.handleClose} autoScrollBodyContent={true}>
+                    <center>
+                        <Avatar style={styles.employee} src="https://www.iconexperience.com/_img/g_collection_png/standard/256x256/businessman.png" />
+                    </center>
+                    <Tabs 
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                    >
+                        <Tab label="Personal Details" value="a" style={{backgroundColor: "#337ab7"}}>
+                        <div className="col-md-6">
+                            <h6 style={styles.headline}>First Name</h6>
+                            <TextField value={this.state.userdetail.firstName} />
+                        </div>
+                        
+                        <div className="col-md-6">
+                            <h6 style={styles.headline}>Middle Name</h6>
+                            <TextField value={this.state.userdetail.middleName}/>
+                        </div>
+                        
+                        <div className="col-md-6">
+                            <h6 style={styles.headline}>Last Name</h6>
+                            <TextField value={this.state.userdetail.lastName} />
+                        </div>
+                        <div className="col-md-6">
+                            <h6 style={styles.headline}>Employee Code</h6>
+                            <TextField value={this.state.userdetail.employeeCode} />
+                        </div>
+                        <div className="col-md-6">
+                            <h6 style={styles.headline}>Email Address</h6>
+                            <TextField value={this.state.userdetail.emailAddress} />
+                        </div>
+                        <div className="col-md-6">
+                            <h6 style={styles.headline}>Gender</h6>
+                            <TextField value={this.state.userdetail.gender} />
+                        </div>
+                        <div className="col-md-6">
+                            <h6 style={styles.headline}>Mobile Number</h6>
+                            <TextField value={this.state.userdetail.mobileNumber} />
+                        </div>
+                        </Tab>
+                        <Tab label="Skills Details" value="b" style={{backgroundColor: "#337ab7"}}>
+                        <div>
+                                    <h6 style={styles.headline}>{this.state.userdetail.skills}</h6>
+                                
+                            
+                        
+                            
+                        </div>
+                        </Tab>
+                    </Tabs>
+                </Dialog>
                 </MuiThemeProvider>
             </div>
         )

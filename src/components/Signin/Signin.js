@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Spinner from '../Spinner/Spinner';
+import {Link} from 'react-router-dom';
 class Signin extends Component {
     constructor(props) {
         super(props);
@@ -37,8 +38,14 @@ class Signin extends Component {
         });
     }
     componentDidMount () {
-        if(localStorage.getItem('user')){
-            this.props.history.push('/')
+        if(localStorage.getItem('token')){
+            var userObj =JSON.parse(localStorage.getItem('user'))
+            if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
+                this.props.history.push('/admin')
+            }
+            else{
+                this.props.history.push('/admin')
+            }
         }
     }
     render() {
@@ -48,25 +55,27 @@ class Signin extends Component {
                     <div className="col-md-4 col-md-offset-4">
                         <div className="login-panel panel panel-default">
                             <div className="panel-div-ui panel-heading ">
-                                <h3 class="panel-title">Please Sign In</h3>
+                                <span class="panel-title" style={{marginLeft: "58px"}}>Please Sign In </span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Link to="/register" className="btn btn-sm btn-success">Register</Link>
                             </div>
                             <div className="panel-body">
-                            <form role="form">
-                                    <fieldset>
-                                        <div className="form-group">
-                                        <input className="form-control" type="email" placeholder="Enter Email Address" name="emailAddress" defaultValue={this.state.emailAddress} onChange={(event) => this.setState({emailAddress:event.target.value})} required autofocus/>
-                                        </div>
-                                        <div className="form-group">
-                                            <input className="form-control" type="password" placeholder="Enter Password" name="password" defaultValue={this.state.password} onChange={(event) => this.setState({password:event.target.value})} required autofocus/>
-                                        </div>
-                                        <div className="checkbox">
-                                            <label>
-                                                <input name="remember" type="checkbox" value="Remember Me"/>Remember Me
-                                            </label>
-                                        </div>
-                                        <button type="button" className="btn btn-lg btn-success btn-block"  onClick={this.handleSubmit}>Login</button>
-                                    </fieldset>
+                                <form role="form">
+                                        <fieldset>
+                                            <div className="form-group">
+                                            <input className="form-control" type="email" placeholder="Enter Email Address" name="emailAddress" defaultValue={this.state.emailAddress} onChange={(event) => this.setState({emailAddress:event.target.value})} required autofocus/>
+                                            </div>
+                                            <div className="form-group">
+                                                <input className="form-control" type="password" placeholder="Enter Password" name="password" defaultValue={this.state.password} onChange={(event) => this.setState({password:event.target.value})} required autofocus/>
+                                            </div>
+                                            <div className="checkbox">
+                                                <label>
+                                                    <input name="remember" type="checkbox" value="Remember Me"/>Remember Me
+                                                </label>
+                                            </div>
+                                            <button type="button" className="btn btn-lg btn-success btn-block"  onClick={this.handleSubmit}>Login</button>
+                                        </fieldset>
                                 </form>
+
                             </div>
                         </div>
                     </div>

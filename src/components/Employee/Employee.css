@@ -6,3 +6,21 @@
     margin-right: 40px;
     margin-left: 40px;
 }
+.tr_table {
+    border-bottom: 1px solid rgb(224, 224, 224); color: rgba(0, 0, 0, 0.87); height: 38px;text-align: center;
+}
+.td_table {
+    height: 48px; text-align: center; font-size: 13px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; background-color: inherit; width: 24px; cursor: inherit;
+}
+.header_table {
+    font-weight: normal; font-size: 12px; height: 56px; text-align: center; color: rgb(255, 251, 251);background-color: #337ab7;    
+}
+.table_body{
+    background-color: rgb(255, 255, 255); width: 100%; border-collapse: collapse; border-spacing: 0px; table-layout: fixed; font-family: Roboto, sans-serif;
+}
+.row{
+    text-align: left;
+}
+.raised_button{
+    color: "white";
+}

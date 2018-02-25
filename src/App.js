@@ -13,22 +13,21 @@ class App extends Component {
   constructor(props) {
     super(props);
   }
-  logout = () =>{
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    this.props.history.push('/login')
-  }
+  
   render() {
     return (
       <div className="App">
         <Layout>
-          <Header currentUser={localStorage.getItem('user')} clickOnLogout={this.logout}/>
+          
+          <Header currentUser={JSON.parse(localStorage.getItem('user'))} clickOnLogout={this.logout}/>
           <Switch>
             <Route path="/login" component={Signin} />
             <Route path="/register" component={Signup} />
             <Route path="/employee_list" component={Employee} />
+            <Route path="/admin/employee_list" component={Employee} />
             <Route path="/edit" component={EmployeeForm} />
             <Route path="/" component={Dashboard} />
+            <Route path="/admin" component={Dashboard} />
           </Switch>
         </Layout>
       </div>

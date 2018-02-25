@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router'
+import {Link} from 'react-router-dom';
 class Signup extends Component {
     constructor(props) {
         super(props);
@@ -38,8 +39,14 @@ class Signup extends Component {
         });
     }
     componentDidMount () {
-        if(localStorage.getItem('user')){
-            this.props.history.push('/')
+        if(localStorage.getItem('token')){
+            var userObj =JSON.parse(localStorage.getItem('user'))
+            if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
+                this.props.history.push('/admin')
+            }
+            else{
+                this.props.history.push('/admin')
+            }
         }
     }
     render() {
@@ -48,8 +55,9 @@ class Signup extends Component {
             <div className="row">
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
-                        <div className="panel-div-ui panel-heading ">
-                            <h3 class="panel-title">Please Sign Up</h3>
+                    <div className="panel-div-ui panel-heading ">
+                            <span class="panel-title" style={{marginLeft: "58px"}}>Please Sign Up </span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Link to="/login" className="btn btn-sm btn-success">Login</Link>
                         </div>
                         <div className="panel-body">
                         <form role="form">
