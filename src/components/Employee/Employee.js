@@ -48,7 +48,8 @@ class Employee extends Component {
         sortDirection: "desc",
         employeeList: [],
         userdetail: {},
-        open: false
+        open: false, 
+        deleteRow: false
       };
     handleOpen = (id,e) => {
         console.log(id);
@@ -76,7 +77,13 @@ class Employee extends Component {
         })
     }
     componentDidMount () {
-        if(localStorage.getItem('user')){
+        if(localStorage.getItem('token')){
+            var userObj =JSON.parse(localStorage.getItem('user'))
+            if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
+                this.state.deleteRow = true
+            }
+        }
+        if(localStorage.getItem('token')){
             axios.get('https://talent-dashboard-app.herokuapp.com/employeeList?pageNo=1&limit=100',{ headers: { token: localStorage.getItem('token') } }).then(response => {
                 this.setState({ employeeList: response.data['data'] });
             }).catch((error) => {
@@ -106,13 +113,56 @@ class Employee extends Component {
           data: state.data.map((row, j) => (j === i ? x : row))
         }));
         this.stopEditing();
-      };
+    };
+    handleDeleteRow = (row) => {
+        var d = row[0]
+        console.log(d)
+        axios.defaults.headers.common['token'] = localStorage.getItem('token');
+        axios.delete('https://talent-dashboard-app.herokuapp.com/deleteEmployee',{data: {userId: d}}).then(response => {
+            return true;
+        }).catch((error) => {
+            console.log(error)
+        })
+        
+    };
+  handleDelete = () => {
+    if(localStorage.getItem('token')){
+        var userObj =JSON.parse(localStorage.getItem('user'))
+        if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
+            console.log("I am her")
+            return true
+        }
+        else{
+            console.log("I am heradad")
+            
+            return false
+        }
+    }
+    else{
+        return false
+    }
+  }
     cellButton(cell, row, enumObject, rowIndex) {
-        return (
-            <MuiThemeProvider>
-            <RaisedButton className="raised_button" backgroundColor="#337ab7" className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
-            </MuiThemeProvider>
-        )
+        if(localStorage.getItem('token')){
+            var userObj =JSON.parse(localStorage.getItem('user'))
+            if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
+                return (
+                    <MuiThemeProvider>
+                        <RaisedButton className="raised_button" backgroundColor="#337ab7" className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
+                    </MuiThemeProvider>
+                    )
+            }
+            else{
+                return (
+                <MuiThemeProvider>
+                    <RaisedButton className="raised_button" backgroundColor="#337ab7" className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
+                </MuiThemeProvider>
+                )
+            }
+        }
+        else{
+            return "#"
+        }
      }
       handleSort = columnName => {
         this.setState(state => ({
@@ -187,9 +237,10 @@ const styles = {
         return (
             
             <div style={{marginRight: "40px",marginLeft: "40px",paddingTop:"20px",paddingBottom:"50px"}}>
-
-                <BootstrapTable data={employees} exportCSV pagination search={ true } trClassName='tr_table' tdClassName='td_table' tableHeaderClass='header_table' tableBodyClass='table_body'>
-                    <TableHeaderColumn dataField="employeeCode" isKey={true} dataAlign="center" dataSort={true}>Emp ID</TableHeaderColumn>
+            
+                <BootstrapTable data={employees} exportCSV pagination search={ true } trClassName='tr_table' tdClassName='td_table' tableHeaderClass='header_table' tableBodyClass='table_body' deleteRow={ this.state.deleteRow } options={ { onDeleteRow: this.handleDeleteRow} } selectRow={ { mode: 'radio' } }>
+                    <TableHeaderColumn dataField="employeeId" isKey={true} hidden>Id</TableHeaderColumn>
+                    <TableHeaderColumn dataField="employeeCode" dataAlign="center" dataSort={true}>Emp ID</TableHeaderColumn>
                     <TableHeaderColumn dataField="employeeName" dataAlign="center" dataSort={true}>Name</TableHeaderColumn>
                     <TableHeaderColumn dataField="emailAddress" dataAlign="center" dataSort={true} >Employee Address</TableHeaderColumn>
                     <TableHeaderColumn dataField="skills" >Skills</TableHeaderColumn>

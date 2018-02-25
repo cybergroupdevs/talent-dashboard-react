@@ -25,7 +25,7 @@ class Signup extends Component {
                 if(response['status']){
                     localStorage.setItem('user', JSON.stringify(response['data']['employee']));
                     localStorage.setItem('token', response['data']['token'])
-                    this.props.history.push('/')
+                    this.props.history.push('/dashboard')
                 }
                 else{
                     alert(response['mesage'])
@@ -42,10 +42,10 @@ class Signup extends Component {
         if(localStorage.getItem('token')){
             var userObj =JSON.parse(localStorage.getItem('user'))
             if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
-                this.props.history.push('/admin')
+                this.props.history.push('/admin/dashboard')
             }
             else{
-                this.props.history.push('/admin')
+                this.props.history.push('/dashboard')
             }
         }
     }
@@ -57,7 +57,7 @@ class Signup extends Component {
                     <div className="login-panel panel panel-default">
                     <div className="panel-div-ui panel-heading ">
                             <span class="panel-title" style={{marginLeft: "58px"}}>Please Sign Up </span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Link to="/login" className="btn btn-sm btn-success">Login</Link>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Link to="/login" className="btn btn-sm btn-primary">Login</Link>
                         </div>
                         <div className="panel-body">
                         <form role="form">
@@ -82,7 +82,7 @@ class Signup extends Component {
                                             <input name="remember" type="checkbox" value="Remember Me"/>Remember Me
                                         </label>
                                     </div>
-                                    <button type="button" className="btn btn-lg btn-success btn-block"  onClick={this.handleSubmit}>Register</button>
+                                    <button type="button" className="btn btn-lg btn-primary btn-block"  onClick={this.handleSubmit}>Register</button>
                                 </fieldset>
                             </form>
                         </div>

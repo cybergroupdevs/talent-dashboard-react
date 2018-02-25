@@ -6,6 +6,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import TextField from "material-ui/TextField";
 import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
+import axios from 'axios';
 const names = [
   'C',
   'Java',
@@ -20,9 +21,10 @@ const names = [
 /**
  * `SelectField` can handle multiple selections. It is enabled with the `multiple` property.
  */
-export default class SelectFieldExampleMultiSelect extends Component {
+class MyProfile extends Component {
   state = {
     values: [],
+    userProfile: {}
   };
 
   handleChange = (event, index, values) => this.setState({values});
@@ -38,7 +40,19 @@ export default class SelectFieldExampleMultiSelect extends Component {
       />
     ));
   }
-
+  componentDidMount () {
+    if(localStorage.getItem('token')){
+        var userObj =JSON.parse(localStorage.getItem('user'))
+        axios.get('https://talent-dashboard-app.herokuapp.com/userdetail?userId='+userObj['_id'],{ headers: { token: localStorage.getItem('token') } }).then(response => {
+            this.setState({ userProfile: response.data['data'] });
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+    else{
+        this.props.history.push('/login')
+    }
+}
   render() {
     const style = {
   margin: 12,
@@ -62,6 +76,7 @@ export default class SelectFieldExampleMultiSelect extends Component {
 };
     const {values} = this.state;
     return (
+        <div style={{marginRight: "40px",marginLeft: "40px",paddingTop:"20px",paddingBottom:"50px"}}>
       <MuiThemeProvider>
       <div>
                     <center>
@@ -75,33 +90,33 @@ export default class SelectFieldExampleMultiSelect extends Component {
                         <RaisedButton className="raised_button" backgroundColor="#B0BEC5"  style={style} label="Update" /><br/>
                         <div className="col-md-6">
                             <h6 style={styles.headline}>First Name</h6>
-                            <TextField value="" />
+                            <TextField value={this.state.userProfile['firstName']} />
                         </div>
                         
                         <div className="col-md-6">
                             <h6 style={styles.headline}>Middle Name</h6>
-                            <TextField value=""/>
+                            <TextField value={this.state.userProfile['middleName']}/>
                         </div>
                         
                         <div className="col-md-6">
                             <h6 style={styles.headline}>Last Name</h6>
-                            <TextField value="" />
+                            <TextField value={this.state.userProfile['lastName']} />
                         </div>
                         <div className="col-md-6">
                             <h6 style={styles.headline}>Employee Code</h6>
-                            <TextField value="" />
+                            <TextField value={this.state.userProfile['employeeCode']} />
                         </div>
                         <div className="col-md-6">
                             <h6 style={styles.headline}>Email Address</h6>
-                            <TextField value="" />
+                            <TextField value={this.state.userProfile['emailAddress']}/>
                         </div>
                         <div className="col-md-6">
                             <h6 style={styles.headline}>Gender</h6>
-                            <TextField value="" />
+                            <TextField value={this.state.userProfile['gender']} />
                         </div>
                         <div className="col-md-6">
                             <h6 style={styles.headline}>Mobile Number</h6>
-                            <TextField value="" />
+                            <TextField value={this.state.userProfile['mobileNumber']} />
                         </div>
                         <div className="col-md-6">
                          <h6 style={styles.headline}>Skills</h6>
@@ -119,6 +134,8 @@ export default class SelectFieldExampleMultiSelect extends Component {
 
       
         </MuiThemeProvider>
+        </div>
     );
   }
 }
+export default MyProfile;

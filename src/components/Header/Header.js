@@ -12,6 +12,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import classes from './Header.css'
+import logo from './logo.png';
 import { transparent } from 'material-ui/styles/colors';
 const styles = {
     customWidth: {
@@ -52,6 +53,20 @@ class Header extends Component {
             anchorEl: event.currentTarget,
         });
     };
+    fetchListUrl = (text) =>{
+        if(localStorage.getItem('token')){
+            var userObj =JSON.parse(localStorage.getItem('user'))
+            if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
+                return "/admin/"+text
+            }
+            else{
+                return "/"+text
+            }
+        }
+        else{
+            return "#"
+        }
+    }
     handleRequestClose = () => {
         this.setState({
           open: false,
@@ -63,17 +78,17 @@ class Header extends Component {
                 <MuiThemeProvider>
                     <AppBar
                     titleStyle={{lineHeight:"54px"}}
-                    title="" style={{backgroundColor: "dimgrey", height:"54px","-webkit-box-shadow": "0 3px 4px #D5D8DC  "}} 
+                    title="" style={{backgroundColor: "#337ab7", height:"54px","-webkit-box-shadow": "0 3px 4px #D5D8DC  "}} 
                     iconClassNameRight="muidocs-icon-navigation-expand-more"
                     iconElementLeft={
                         localStorage.getItem('token')?
                         <div>
-                        <img src="http://www.mangalmay.org/upload/companylogo/companylogo_54826289.png" width="25%" style={{ marginTop: "1%", marginLeft: "-28%"}} />
-                        <Link to="/" style={{marginLeft: "30px",color:"white",textDecoration:"none"}}>Dashboard</Link>
-                        <Link to="/employee_list" style={{marginLeft: "30px",color:"white",textDecoration:"none"}}>Employee List</Link>
+                        <img src={logo} width="23%" style={{ marginTop: "1%", marginLeft: "-28%"}} />
+                        <Link to={this.fetchListUrl('dashboard')} style={{marginLeft: "30px",color:"white",textDecoration:"none"}}>Dashboard</Link>
+                        <Link to={this.fetchListUrl('employee_list')} style={{marginLeft: "30px",color:"white",textDecoration:"none"}}>Employee List</Link>
                         </div>:
                         <div>
-                            <img src="http://www.mangalmay.org/upload/companylogo/companylogo_54826289.png" width="45%" style={{ marginTop: "1%", marginLeft: "-48%"}} />
+                            <img src={logo} width="45%" style={{ marginTop: "1%", marginLeft: "-38%"}} />
                         
                         </div>
                     }
@@ -86,10 +101,10 @@ class Header extends Component {
                                 anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                                 targetOrigin={{horizontal: 'left', vertical: 'top'}}
                                 onRequestClose={this.handleRequestClose}
-                                style={{backgroundColor: "dimgrey", paddingLeft: "20px","fontSize":"12px",color:"white"}}
+                                style={{backgroundColor: "#337ab7", paddingLeft: "20px","fontSize":"12px",color:"white"}}
                                 >
                                 <Menu >
-                                    <MenuItem style={{color: "white",fontSize: "14px"}} primaryText="My Profile"><Link to="/myprofile"/></MenuItem>
+                                <Link to={this.fetchListUrl('myprofile')}><MenuItem style={{color: "white",fontSize: "14px"}} primaryText="My Profile"></MenuItem></Link>
                                     <MenuItem style={{color: "white",fontSize: "14px"}} primaryText="Logout" onClick={this.logout}/>
                                 </Menu>
                                 </Popover>
