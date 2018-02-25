@@ -23,7 +23,6 @@
     "react-table": "^6.7.6",
     "react-tap-event-plugin": "^3.0.2",
     "typeface-roboto": "0.0.54"
-    
   },
   "scripts": {
     "start": "react-scripts start",
