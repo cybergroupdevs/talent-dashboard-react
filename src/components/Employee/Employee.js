@@ -15,6 +15,8 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import Avatar from 'material-ui/Avatar';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import  '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
+import Chip from 'material-ui/Chip';
+
 // import {
 //     Table,
 //     TableBody,
@@ -144,6 +146,13 @@ const styles = {
     marginBottom: 12,
     fontWeight: 400,
   },
+  chip: {
+    margin: 4,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
   employee: {
     fontSize: 15,
     paddingTop: 16,
@@ -229,6 +238,11 @@ const styles = {
                         </Tab>
                         <Tab label="Skills Details" value="b" style={{backgroundColor: "#337ab7"}}>
                         <div>
+                         <Chip
+          style={styles.chip}
+        >
+          {this.state.userdetail.skills}
+        </Chip>
                                     <h6 style={styles.headline}>{this.state.userdetail.skills}</h6>
                                 
                             
