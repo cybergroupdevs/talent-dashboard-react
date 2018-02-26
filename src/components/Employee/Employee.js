@@ -154,14 +154,14 @@ class Employee extends Component {
             if(userObj['userType'] && userObj['userType'].toUpperCase() == "ADMIN"){
                 return (
                     <MuiThemeProvider>
-                        <RaisedButton className="raised_button" backgroundColor="#337ab7" className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
+                        <RaisedButton className={classes.raised_button} backgroundColor="#337ab7" labelColor="#ffffff" labelStyle={{fontWeight: "100"}} className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
                     </MuiThemeProvider>
                     )
             }
             else{
                 return (
                 <MuiThemeProvider>
-                    <RaisedButton className="raised_button" backgroundColor="#337ab7" className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
+                    <RaisedButton className={classes.raised_button} backgroundColor="#337ab7" labelColor="#ffffff" labelStyle={{fontWeight: "100"}} className={classes.raised_button} onClick={this.handleOpen.bind(this,row.employeeId)} label="View Detail"/>
                 </MuiThemeProvider>
                 )
             }
