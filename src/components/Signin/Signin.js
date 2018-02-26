@@ -63,8 +63,8 @@ class Signin extends Component {
                     <div className="col-md-4 col-md-offset-4">
                         <div className="login-panel panel panel-default">
                             <div className="panel-div-ui panel-heading ">
-                                <span class="panel-title" style={{marginLeft: "58px"}}>Please Sign In </span>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<Link to="/register" style={{textAlign: 'right'}} className="btn btn-sm btn-primary">Register</Link>
+                                <span className="panel-title" style={{width: "50%", display:"inline-block"}}>Please Sign In </span>
+                                <span className="pull-right"><Link to="/register" className="btn btn-sm btn-primary">Register</Link></span>
                             </div>
                             <div className="panel-body">
                                 <form role="form">

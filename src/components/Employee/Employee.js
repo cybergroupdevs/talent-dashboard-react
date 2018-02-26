@@ -117,12 +117,18 @@ class Employee extends Component {
     handleDeleteRow = (row) => {
         var d = row[0]
         console.log(d)
-        axios.defaults.headers.common['token'] = localStorage.getItem('token');
-        axios.delete('https://talent-dashboard-app.herokuapp.com/deleteEmployee',{data: {userId: d}}).then(response => {
-            return true;
-        }).catch((error) => {
-            console.log(error)
-        })
+        var userObj =JSON.parse(localStorage.getItem('user'))
+        if(d != userObj['_id']){
+            axios.defaults.headers.common['token'] = localStorage.getItem('token');
+            axios.delete('https://talent-dashboard-app.herokuapp.com/deleteEmployee',{data: {userId: d}}).then(response => {
+                return true;
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        else{
+            return false
+        }
         
     };
   handleDelete = () => {
